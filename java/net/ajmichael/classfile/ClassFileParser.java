@@ -8,7 +8,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-public class ClassFileParser implements Function<ByteBuffer, ClassFile> {
+public final class ClassFileParser implements Function<ByteBuffer, ClassFile> {
   @Override
   public ClassFile apply(ByteBuffer classFile) {
     if (classFile.getInt() != ClassFile.magic()) {
