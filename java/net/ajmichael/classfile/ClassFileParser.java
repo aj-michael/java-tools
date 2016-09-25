@@ -19,7 +19,8 @@ public class ClassFileParser implements Function<ByteBuffer, ClassFile> {
         .setMajorVersion(classFile.getShort());
     short constantPoolCount = classFile.getShort();
     builder.setConstantPoolCount(constantPoolCount)
-        .setConstantPool(applyN(constantPoolCount, ClassFileParser::readConstantPoolInfo, classFile))
+        .setConstantPool(
+            applyN(constantPoolCount - 1, ClassFileParser::readConstantPoolInfo, classFile))
         .setAccessFlags(classFile.getShort())
         .setThisClass(classFile.getShort())
         .setSuperClass(classFile.getShort());
@@ -44,22 +45,22 @@ public class ClassFileParser implements Function<ByteBuffer, ClassFile> {
         .collect(Collectors.collectingAndThen(Collectors.toList(), ImmutableList::copyOf));
   }
 
-  private static final ImmutableMap<Integer, Function<ByteBuffer, ConstantPoolInfo>> CONSTANT_POOL_PARSERS =
-      new ImmutableMap.Builder<Integer, Function<ByteBuffer, ConstantPoolInfo>>()
-          .put(7, ClassFileParser::readClassInfo)
-          .put(9, ClassFileParser::readFieldRefInfo)
-          .put(10, ClassFileParser::readMethodRefInfo)
-          .put(11, ClassFileParser::readInterfaceMethodRefInfo)
-          .put(8, ClassFileParser::readStringInfo)
-          .put(3, ClassFileParser::readIntegerInfo)
-          .put(4, ClassFileParser::readFloatInfo)
-          .put(5, ClassFileParser::readLongInfo)
-          .put(6, ClassFileParser::readDoubleInfo)
-          .put(12, ClassFileParser::readNameAndTypeInfo)
-          .put(1, ClassFileParser::readUtf8Info)
-          .put(15, ClassFileParser::readMethodHandleInfo)
-          .put(16, ClassFileParser::readMethodTypeInfo)
-          .put(18, ClassFileParser::readInvokeDynamicInfo)
+  private static final ImmutableMap<Byte, Function<ByteBuffer, ConstantPoolInfo>> CONSTANT_POOL_PARSERS =
+      new ImmutableMap.Builder<Byte, Function<ByteBuffer, ConstantPoolInfo>>()
+          .put((byte) 7, ClassFileParser::readClassInfo)
+          .put((byte) 9, ClassFileParser::readFieldRefInfo)
+          .put((byte) 10, ClassFileParser::readMethodRefInfo)
+          .put((byte) 11, ClassFileParser::readInterfaceMethodRefInfo)
+          .put((byte) 8, ClassFileParser::readStringInfo)
+          .put((byte) 3, ClassFileParser::readIntegerInfo)
+          .put((byte) 4, ClassFileParser::readFloatInfo)
+          .put((byte) 5, ClassFileParser::readLongInfo)
+          .put((byte) 6, ClassFileParser::readDoubleInfo)
+          .put((byte) 12, ClassFileParser::readNameAndTypeInfo)
+          .put((byte) 1, ClassFileParser::readUtf8Info)
+          .put((byte) 15, ClassFileParser::readMethodHandleInfo)
+          .put((byte) 16, ClassFileParser::readMethodTypeInfo)
+          .put((byte) 18, ClassFileParser::readInvokeDynamicInfo)
           .build();
 
   private static ConstantPoolInfo readConstantPoolInfo(ByteBuffer classFile) {
@@ -72,8 +73,7 @@ public class ClassFileParser implements Function<ByteBuffer, ClassFile> {
         .setNameIndex(classFile.getShort())
         .setDescriptorIndex(classFile.getShort());
     short attributesCount = classFile.getShort();
-    return builder
-        .setAttributesCount(attributesCount)
+    return builder.setAttributesCount(attributesCount)
         .setAttributes(applyN(attributesCount, ClassFileParser::readAttributeInfo, classFile))
         .build();
   }
