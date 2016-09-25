@@ -1,0 +1,6 @@
+# javad
+
+```
+bazel build //...
+bazel test //...
+```
