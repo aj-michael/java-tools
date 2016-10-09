@@ -3,11 +3,43 @@ package net.ajmichael.classfile;
 import com.google.auto.value.AutoValue;
 import com.google.common.collect.ImmutableList;
 
+import java.nio.ByteBuffer;
+
+import static net.ajmichael.util.Helpers.applyN;
+
 /**
  * A parsed class file.
  */
 @AutoValue
 public abstract class ClassFile {
+  public static ClassFile parse(ByteBuffer classFile) {
+    if (classFile.getInt() != ClassFile.magic()) {
+      throw new IllegalArgumentException("Attempting to parse an invalid class file");
+    }
+    ClassFile.Builder builder = ClassFile.builder()
+        .setMinorVersion(classFile.getShort())
+        .setMajorVersion(classFile.getShort());
+    short constantPoolCount = classFile.getShort();
+    builder.setConstantPoolCount(constantPoolCount)
+        .setConstantPool(applyN(constantPoolCount - 1, ConstantPoolInfo::parse, classFile))
+        .setAccessFlags(classFile.getShort())
+        .setThisClass(classFile.getShort())
+        .setSuperClass(classFile.getShort());
+    short interfacesCount = classFile.getShort();
+    builder.setInterfacesCount(interfacesCount)
+        .setInterfaces(applyN(interfacesCount, ByteBuffer::getShort, classFile));
+    short fieldsCount = classFile.getShort();
+    builder.setFieldsCount(fieldsCount)
+        .setFields(applyN(fieldsCount, FieldInfo::parse, classFile));
+    short methodsCount = classFile.getShort();
+    builder.setMethodsCount(methodsCount)
+        .setMethods(applyN(methodsCount, MethodInfo::parse, classFile));
+    short attributesCount = classFile.getShort();
+    return builder.setAttributesCount(attributesCount)
+        .setAttributes(applyN(attributesCount, AttributeInfo::parse, classFile))
+        .build();
+  }
+
   public static Builder builder() {
     return new AutoValue_ClassFile.Builder();
   }

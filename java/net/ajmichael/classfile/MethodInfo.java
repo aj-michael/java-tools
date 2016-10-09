@@ -3,8 +3,23 @@ package net.ajmichael.classfile;
 import com.google.auto.value.AutoValue;
 import com.google.common.collect.ImmutableList;
 
+import java.nio.ByteBuffer;
+
+import static net.ajmichael.util.Helpers.applyN;
+
 @AutoValue
 public abstract class MethodInfo {
+  public static MethodInfo parse(ByteBuffer classFile) {
+    MethodInfo.Builder builder = MethodInfo.builder()
+        .setAccessFlags(classFile.getShort())
+        .setNameIndex(classFile.getShort())
+        .setDescriptorIndex(classFile.getShort());
+    short attributesCount = classFile.getShort();
+    return builder.setAttributesCount(attributesCount)
+        .setAttributes(applyN(attributesCount, AttributeInfo::parse, classFile))
+        .build();
+  }
+
   public static Builder builder() {
     return new AutoValue_MethodInfo.Builder();
   }

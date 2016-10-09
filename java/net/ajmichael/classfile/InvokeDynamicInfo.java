@@ -2,8 +2,17 @@ package net.ajmichael.classfile;
 
 import com.google.auto.value.AutoValue;
 
+import java.nio.ByteBuffer;
+
 @AutoValue
 public abstract class InvokeDynamicInfo implements ConstantPoolInfo {
+  public static InvokeDynamicInfo parse(ByteBuffer classFile) {
+    return InvokeDynamicInfo.builder()
+        .setBootstrapMethodAttrIndex(classFile.getShort())
+        .setNameAndTypeIndex(classFile.getShort())
+        .build();
+  }
+
   public static Builder builder() {
     return new AutoValue_InvokeDynamicInfo.Builder();
   }

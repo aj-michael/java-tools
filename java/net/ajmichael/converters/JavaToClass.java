@@ -7,7 +7,7 @@ import net.ajmichael.javafile.JavaFile;
 import java.nio.file.Path;
 import java.util.function.Function;
 
-public final class JavaToClass implements Function<JavaFile, ImmutableMap<Path, ClassFile>> {
+final class JavaToClass implements Function<JavaFile, ImmutableMap<Path, ClassFile>> {
   @Override
   public ImmutableMap<Path, ClassFile> apply(JavaFile javaFile) {
     return null;

@@ -1,7 +1,7 @@
 package net.ajmichael.javad;
 
-import net.ajmichael.classfile.ClassFileParser;
-import net.ajmichael.converters.ClassToJava;
+import net.ajmichael.classfile.ClassFile;
+import net.ajmichael.converters.Converter;
 import net.ajmichael.javafile.JavaFileWriter;
 
 import java.io.IOException;
@@ -17,8 +17,8 @@ public class App {
         .map(Paths::get)
         .map(App::readAllBytes)
         .map(ByteBuffer::wrap)
-        .map(new ClassFileParser())
-        .map(new ClassToJava())
+        .map(ClassFile::parse)
+        .map(Converter.classToJava())
         .forEach(new JavaFileWriter());
   }
 

@@ -3,8 +3,20 @@ package net.ajmichael.classfile;
 import com.google.auto.value.AutoValue;
 import com.google.common.collect.ImmutableList;
 
+import java.nio.ByteBuffer;
+
+import static net.ajmichael.util.Helpers.applyN;
+
 @AutoValue
 public abstract class Utf8Info implements ConstantPoolInfo {
+  public static Utf8Info parse(ByteBuffer classFile) {
+    short length = classFile.getShort();
+    return Utf8Info.builder()
+        .setLength(length)
+        .setBytes(applyN(length, ByteBuffer::get, classFile))
+        .build();
+  }
+
   public static Builder builder() {
     return new AutoValue_Utf8Info.Builder();
   }

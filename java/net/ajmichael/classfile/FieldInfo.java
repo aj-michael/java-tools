@@ -3,11 +3,23 @@ package net.ajmichael.classfile;
 import com.google.auto.value.AutoValue;
 import com.google.common.collect.ImmutableList;
 
-/**
- * TODO: Document
- */
+import java.nio.ByteBuffer;
+
+import static net.ajmichael.util.Helpers.applyN;
+
 @AutoValue
 public abstract class FieldInfo {
+  public static FieldInfo parse(ByteBuffer classFile) {
+    FieldInfo.Builder builder = FieldInfo.builder()
+        .setAccessFlags(classFile.getShort())
+        .setNameIndex(classFile.getShort())
+        .setDescriptorIndex(classFile.getShort());
+    short attributesCount = classFile.getShort();
+    return builder.setAttributesCount(attributesCount)
+        .setAttributes(applyN(attributesCount, AttributeInfo::parse, classFile))
+        .build();
+  }
+
   public static Builder builder() {
     return new AutoValue_FieldInfo.Builder();
   }

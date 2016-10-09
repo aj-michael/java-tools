@@ -2,8 +2,16 @@ package net.ajmichael.classfile;
 
 import com.google.auto.value.AutoValue;
 
+import java.nio.ByteBuffer;
+
 @AutoValue
 public abstract class MethodTypeInfo implements ConstantPoolInfo {
+  public static MethodTypeInfo parse(ByteBuffer classFile) {
+    return MethodTypeInfo.builder()
+        .setDescriptorIndex(classFile.getShort())
+        .build();
+  }
+
   public static Builder builder() {
     return new AutoValue_MethodTypeInfo.Builder();
   }

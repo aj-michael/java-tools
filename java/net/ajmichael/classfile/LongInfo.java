@@ -2,8 +2,17 @@ package net.ajmichael.classfile;
 
 import com.google.auto.value.AutoValue;
 
+import java.nio.ByteBuffer;
+
 @AutoValue
 public abstract class LongInfo implements ConstantPoolInfo {
+  public static LongInfo parse(ByteBuffer classFile) {
+    return LongInfo.builder()
+        .setHighBytes(classFile.getInt())
+        .setLowBytes(classFile.getInt())
+        .build();
+  }
+
   public static Builder builder() {
     return new AutoValue_LongInfo.Builder();
   }

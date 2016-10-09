@@ -9,7 +9,7 @@ import net.ajmichael.javafile.JavaFile;
 import java.nio.charset.StandardCharsets;
 import java.util.function.Function;
 
-public final class ClassToJava implements Function<ClassFile, JavaFile> {
+final class ClassToJava implements Function<ClassFile, JavaFile> {
   @Override
   public JavaFile apply(ClassFile classFile) {
     JavaFile.Builder builder = JavaFile.builder()
