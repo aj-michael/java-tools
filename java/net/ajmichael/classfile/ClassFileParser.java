@@ -1,12 +1,11 @@
 package net.ajmichael.classfile;
 
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
 import java.nio.ByteBuffer;
 import java.util.function.Function;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
+
+import static net.ajmichael.util.Helpers.applyN;
 
 public final class ClassFileParser implements Function<ByteBuffer, ClassFile> {
   @Override
@@ -37,12 +36,6 @@ public final class ClassFileParser implements Function<ByteBuffer, ClassFile> {
     return builder.setAttributesCount(attributesCount)
         .setAttributes(applyN(attributesCount, ClassFileParser::readAttributeInfo, classFile))
         .build();
-  }
-
-  private static <A, B> ImmutableList<B> applyN(int count, Function<A, B> function, A arg) {
-    return IntStream.range(0, count)
-        .mapToObj(x -> function.apply(arg))
-        .collect(Collectors.collectingAndThen(Collectors.toList(), ImmutableList::copyOf));
   }
 
   private static final ImmutableMap<Byte, Function<ByteBuffer, ConstantPoolInfo>> CONSTANT_POOL_PARSERS =
