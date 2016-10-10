@@ -9,9 +9,7 @@ java_library(
 java_plugin(
     name = "auto_value_plugin",
     processor_class = "com.google.auto.value.processor.AutoValueProcessor",
-    deps = [
-        "@com_google_auto_value_auto_value//jar",
-    ],
+    deps = ["@com_google_auto_value_auto_value//jar"],
 )
 
 java_library(
